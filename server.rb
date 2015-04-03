@@ -25,3 +25,7 @@ post '/actors/actions' do
   $redis.lpush("actor:planner:42:actions", params)
   {}.to_json
 end
+
+def permitted_params(params)
+  params.keep_if { |key| [:actor, :action].include? key }
+end
