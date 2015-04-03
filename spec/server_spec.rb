@@ -9,9 +9,15 @@ describe 'Server' do
 
   describe "acitons" do
     let(:valid_params) do
-      { user_type: "Planner", user_id: "42" } # the action
+      {  actor: { user_type: "Planner", user_id: "42"},
+         action: { tags: [ "signup", "freetrial"],
+                   timestamp: 1428085046,
+                   target: "subscription" }} # the action
     end
-
+    #{  actor: { user_type: "Planner", user_id: "42"},
+    #   action: { tags: [ "account", "confirm"],
+    #             timestamp: 1428087046,
+    #             target: "self" }}
     before(:each) do
       allow($redis).to receive(:set)
       post '/actions', valid_params

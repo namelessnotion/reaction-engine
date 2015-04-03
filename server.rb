@@ -8,9 +8,9 @@ end
 # record actions -> update state
 # Action
 # * actor
-# * tags
-# * target
-# * timestamps
+# * tags = ["signup", "freetrial"]
+# * target = "Subscription"
+# * timestamp (unix epoch offset integer)
 
 # Actor
 # * User Type [ Planner, Attendee, Speaker, Sponsor, Supplier ]
@@ -22,6 +22,6 @@ get '/' do
 end
 
 post '/actions' do
-  $redis.set("test", "test");
+  $redis.lpush("actor:planner:42:actions", params)
   {}.to_json
 end
