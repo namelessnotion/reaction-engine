@@ -4,6 +4,9 @@ require File.join(File.dirname(__FILE__), '..', 'server')
 # Load the testing libraries
 require 'rspec'
 require 'rack/test'
+require 'redis'
+
+$redis = Redis.new(db: 1)
 
 RSpec.configure do |config|
   config.mock_with :rspec
