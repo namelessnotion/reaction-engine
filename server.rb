@@ -21,7 +21,7 @@ get '/' do
   "Hullo"
 end
 
-post '/actions' do
+post '/actors/actions' do
   $redis.lpush("actor:planner:42:actions", params)
   {}.to_json
 end

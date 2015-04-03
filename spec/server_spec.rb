@@ -20,12 +20,13 @@ describe 'Server' do
     #             target: "self" }}
     before(:each) do
       allow($redis).to receive(:set)
-      post '/actions', valid_params
+      allow($redis).to receive(:lpush)
+      post '/actors/actions', valid_params
     end
 
     context "actor does not exist already" do
       it "should create the actor" do
-        expect($redis).to have_received(:set)
+        expect($redis).to have_received(:lpush)
       end
     end
 
