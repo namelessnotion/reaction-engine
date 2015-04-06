@@ -28,12 +28,3 @@ end
 def permitted_params(params)
   params.keep_if { |key| [:actor, :action].include? key }
 end
-
-
-# -app
-    # = controller
-    # = model
-      # active record
-    # = view
-      # erb
-    # = helper
