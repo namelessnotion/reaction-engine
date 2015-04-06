@@ -45,5 +45,15 @@ describe 'Server' do
     it "should return the created action" do
       expect(last_response.body).to eq({}.to_json)
     end
+
+      describe "valid signup information" do
+      it "creates user in the database" do
+        expect {
+          post :create, actor: { }
+        }.to change{
+          Actor.actions.all.count
+        }.by(1)
+      end
+    end
   end
 end
