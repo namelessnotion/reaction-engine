@@ -18,7 +18,6 @@ end
 # * state (?)
 
 get '/' do
-  "Hullo"
 end
 
 post '/actors/actions' do

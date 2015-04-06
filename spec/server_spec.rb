@@ -4,7 +4,6 @@ describe 'Server' do
   it "should get home page" do
     get '/'
     expect(last_response).to be_ok
-    expect(last_response.body).to include('Hullo')
   end
 
   describe "acitons" do
