@@ -39,11 +39,27 @@ describe 'Server' do
     end
 
     it "should create a new action" do
-      expect(last_response).to be_ok
     end
 
-    it "should return the created action" do
-      expect(last_response.body).to eq({}.to_json)
+    it "should find or create the actor" do
+    end
+
+    context "valid action" do
+      it "build the action" do
+      end
+
+      it "should respond with a ok status" do
+        expect(response.status).to eq(201)
+      end
+
+      it "should return the created action" do
+        expect(last_response.body).to eq({
+          action: {
+            actor: { type: "Planner", id: 42 },
+            tags: [ "signup", "freetrial"],
+            target: "Subscription",
+            timestamp: 1428344222 }}.to_json)
+      end
     end
   end
 end
