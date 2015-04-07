@@ -1,9 +1,47 @@
-Simple Sinatra and RSpec example.
+Reaction Engine
+---------------
 
-Use `ruby server.rb` to run, `rake spec` or `autospec` to test.
+Reaction Engine is a micro service to record `actions` produced by
+`actors` and then to execute a `reaction` determined by a set of `rules`.
 
-Built with: 
+Setup
+-----
 
-* Sinatra 1.3.2
-* Rack::Test 0.6.1 
-* RSpec 2.9.0 
+Setup ruby
+
+```
+rbenv install 2.2.1
+rbenv shell 2.2.1
+gem system --update
+gem install bundler
+```
+
+Setup ReactionEngine
+```
+git clone git@github.com:namelessnotion/reaction-engine.git`
+cd reaction-engine
+bundle install
+```
+
+Setup Redis
+
+```
+brew install redis
+redis-server
+```
+
+Start ReactionEngine
+
+```
+bundle exec foreman start
+```
+
+Testing
+
+```
+rake spec
+```
+
+```
+rspec spec
+```
