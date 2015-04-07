@@ -11,6 +11,5 @@ port        ENV['PORT']     || 3000
 environment ENV['RACK_ENV'] || 'development'
 
 on_worker_boot do
-  #probably need to handle our redis connections here
   $redis = Redis.new(url: ENV["REDISTOGO_URL"])
 end

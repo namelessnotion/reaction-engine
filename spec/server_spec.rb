@@ -1,74 +1,65 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
-describe 'Server' do
+describe ReactionEngine::Server do
   it "should get home page" do
     get '/'
     expect(last_response).to be_ok
   end
 
-  describe "acitons" do
+  describe "post /actors/*/*/actions" do
     let(:valid_params) do
-      {  actor: { user_type: "Planner", user_id: "42"},
-         action: { tags: [ "signup", "freetrial"],
-                   timestamp: 1428085046,
-                   target: "subscription" }} # the action
+      { action: { "tags" => [ "signup", "freetrial"],
+                  "timestamp" => "#{Time.now.to_i}",
+                  "target" =>  "subscription" }} # the action
     end
-    #{  actor: { user_type: "Planner", user_id: "42"},
-    #   action: { tags: [ "account", "confirm"],
-    #             timestamp: 1428087046,
-    #             target: "self" }}
+
+    let(:actor) { double("Actor double") }
+    let(:actions) { double("Actions collection for actor") }
+    let(:action) { double("Action double") }
+
     before(:each) do
-      allow($redis).to receive(:set)
-      allow($redis).to receive(:lpush)
-      post '/actors/actions', valid_params
+      # Stub our models out, only interested in the http sinatra app here
+      allow(ReactionEngine::Actor).to receive(:find).with({ type: 'planner', id: 42}).and_return(actor)
+      allow(actor).to receive(:actions).with(no_args).and_return(actions)
+      allow(actions).to receive(:build).with(valid_params[:action]).and_return(action)
     end
 
-    describe '#permitted_params' do
-      context 'valid keys' do
-        it 'allows the keys' do
-          expect(permitted_params(valid_params).keys).to include(:actor)
-          expect(permitted_params(valid_params).keys).to include(:action)
-        end
+    context "valid action params" do
+      before(:each) do
+        allow(action).to receive(:save).and_return(true)
+        allow(action).to receive(:to_json).and_return("i'm json!")
+        post '/actors/planner/42/actions', valid_params
+      end
+      it "should load the actor" do
+        expect(ReactionEngine::Actor).to have_received(:find).with({type: 'planner', id: 42})
       end
 
-      context 'invalid keys' do
-        it 'does not allow the keys' do
-          expect(permitted_params({ foo: 'bar' }).keys).not_to include(:foo)
-        end
-      end
-    end
-
-    it "should create a new action" do
-    end
-
-    it "should find or create the actor" do
-    end
-
-    context "valid action" do
-      it "build the action" do
+      it "should build the action" do
+        expect(actions).to have_received(:build).with(valid_params[:action])
       end
 
       it "should respond with a ok status" do
-        expect(response.status).to eq(201)
+        expect(last_response.status).to eq(201)
       end
 
       it "should return the created action" do
-        expect(last_response.body).to eq({
-          action: {
-            actor: { type: "Planner", id: 42 },
-            tags: [ "signup", "freetrial"],
-            target: "Subscription",
-            timestamp: 1428344222 }}.to_json)
+        expect(last_response.body).to eq("i'm json!")
       end
     end
 
-      describe "valid signup information" do
-      it "creates user in the database" do
-        expect {
-          post :create, actor: { }
-        }.to change{
-          Actor.actions.all.count
-        }.by(1)
+    context "invalid action params" do
+      before(:each) do
+        allow(action).to receive(:save).and_return(false)
+        allow(action).to receive(:to_json).and_return("i'm json!")
+        post '/actors/planner/42/actions', valid_params
+      end
+
+      it "should respond with a ok status" do
+        expect(last_response.status).to eq(422)
+      end
+
+      it "should response with error message" do
+        expect(last_response.body).to eq( {status: "error", message: "failed to save action"}.to_json)
       end
     end
   end

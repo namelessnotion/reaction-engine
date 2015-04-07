@@ -1,4 +1,4 @@
 require 'bundler/setup'
-load 'server.rb'
+require File.join(File.dirname(__FILE__), 'lib', 'reaction_engine')
 
-run Sinatra::Application
+run ReactionEngine::Server
