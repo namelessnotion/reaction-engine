@@ -12,7 +12,8 @@ describe ReactionEngine::Action do
     let(:action) { ReactionEngine::Action.new({actor: actor,
                                     tags: ['1', '2', '3'],
                                     target: 'Subscription',
-                                    timestamp: timestamp})}
+                                    timestamp: timestamp,
+                                    loadtime: "2.42"})}
     it "should find the action" do
       action.save
       result = ReactionEngine::Action.find("#{actor}:action:#{timestamp}")
@@ -26,7 +27,8 @@ describe ReactionEngine::Action do
     let(:action) { ReactionEngine::Action.new({actor: actor,
                                     tags: ['a', 'b', 'c'],
                                     target: 'Subscription',
-                                    timestamp: timestamp})}
+                                    timestamp: timestamp,
+                                    loadtime: "2.42"})}
     context "valid params" do
       it "should save to redis" do
         expect(action.save).to eq(true)
@@ -38,6 +40,7 @@ describe ReactionEngine::Action do
         expect($redis.hget(action.key, "tags")).to eq(['a', 'b', 'c'].to_json)
         expect($redis.hget(action.key, "target")).to eq("Subscription")
         expect($redis.hget(action.key, "timestamp")).to eq("#{timestamp}")
+        expect($redis.hget(action.key, "loadtime")).to eq("2.42")
       end
     end
   end

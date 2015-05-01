@@ -10,7 +10,8 @@ describe ReactionEngine::Server do
     let(:valid_params) do
       { action: { "tags" => [ "signup", "freetrial"],
                   "timestamp" => "#{Time.now.to_i}",
-                  "target" =>  "subscription" }} # the action
+                  "target" =>  "subscription",
+                  "loadtime" => "2.42" }} # the action
     end
 
     let(:actor) { double("Actor double") }

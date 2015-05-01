@@ -19,6 +19,7 @@ module ReactionEngine
 
       @target = params[:target]
       @timestamp = params[:timestamp].to_s
+      @loadtime = params[:loadtime].to_s
     end
 
     def saved?
@@ -30,7 +31,7 @@ module ReactionEngine
     end
 
     def valid?
-      ![@actor, @tags, @target, @timestamp].include?(nil)
+      ![@actor, @tags, @target, @timestamp, @loadtime].include?(nil)
     end
 
     def key
@@ -38,6 +39,7 @@ module ReactionEngine
     end
 
     def save
+      key
       if !saved?
         if valid?
           result = $redis.multi do
@@ -45,6 +47,7 @@ module ReactionEngine
             $redis.hset self.key, "tags", @tags.to_json
             $redis.hset self.key, "target", @target
             $redis.hset self.key, "timestamp", @timestamp
+            $redis.hset self.key, "loadtime", @loadtime
           end
           if result
             $redis.lpush(@actor.actions_key, self.key)
@@ -72,6 +75,7 @@ module ReactionEngine
     def tags; @tags; end
     def target; @target; end
     def timestamp; @timestamp; end
+    def loadtime; @loadtime; end
     def ==(other)
       self.to_hash == other.to_hash
     end
@@ -80,7 +84,8 @@ module ReactionEngine
       { actor: self.actor.to_s,
         tags: self.tags,
         target: self.target,
-        timestamp: self.timestamp }
+        timestamp: self.timestamp,
+        loadtime: self.loadtime }
     end
 
     def to_json
